@@ -5,9 +5,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "copy": "cp manifest.json dist/ && cp src/background.js src/content.js src/page-bridge.js src/sidepanel.html src/sidepanel.css dist/ && cp -r icons dist/",
+    "copy": "mkdir -p dist && cp manifest.json dist/ && cp src/background.js src/content.js src/page-bridge.js src/sidepanel.html src/sidepanel.css dist/ && cp -r icons dist/",
     "bundle": "esbuild src/sidepanel.js --bundle --outfile=dist/sidepanel.js --format=esm --platform=browser --target=chrome120",
-    "build": "npm run bundle && npm run copy",
+    "package": "node scripts/package-extension.js",
+    "build": "npm run bundle && npm run copy && npm run package",
     "watch": "npm run copy && npm run bundle -- --watch"
   },
   "dependencies": {
