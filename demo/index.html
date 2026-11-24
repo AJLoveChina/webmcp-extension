@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebMCP Demo Store &amp; Task Board</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 900px;
+      margin: 32px auto;
+      padding: 0 20px;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+    .badge {
+      background: #e0e7ff;
+      color: #4338ca;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    h2 {
+      font-size: 18px;
+      margin-top: 0;
+    }
+    ul {
+      padding-left: 18px;
+    }
+    li {
+      margin: 8px 0;
+    }
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    input, select, button {
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+    }
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    #log {
+      margin-top: 20px;
+      background: #0f172a;
+      color: #a5b4fc;
+      padding: 14px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1 style="margin: 0; font-size: 24px;">⚡ WebMCP Test Playground</h1>
+      <p style="margin: 4px 0 0; color: #64748b; font-size: 14px;">
+        Exposes both Imperative (<code>navigator.modelContext.registerTool</code>) and Declarative (<code>&lt;form toolname="..."&gt;</code>) WebMCP tools.
+      </p>
+    </div>
+    <span class="badge">WebMCP Enabled</span>
+  </header>
+
+  <div class="grid">
+    <!-- Imperative WebMCP Todo List -->
+    <div class="card">
+      <h2>Todo List (Imperative WebMCP)</h2>
+      <ul id="todo-list"></ul>
+    </div>
+
+    <!-- Declarative WebMCP Form -->
+    <div class="card">
+      <h2>Support Ticket (Declarative WebMCP Form)</h2>
+      <form
+        id="support-form"
+        toolname="createSupportTicket"
+        tooldescription="Submit a customer support ticket with a subject and priority level"
+        toolautosubmit
+      >
+        <div class="form-row">
+          <label for="subject">Subject</label>
+          <input
+            type="text"
+            id="subject"
+            name="subject"
+            required
+            placeholder="e.g. Billing question"
+            toolparamdescription="Short summary of the customer support issue"
+          />
+        </div>
+        <div class="form-row">
+          <label for="priority">Priority</label>
+          <select id="priority" name="priority" toolparamdescription="Urgency of the ticket: low, medium, or high">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <button type="submit">Submit Ticket</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="log">Ready. Open the <strong>webmcp</strong> Chrome extension to control this page!</div>
+
+  <script>
+    const todos = [
+      { id: 1, text: 'Test WebMCP Chrome Extension', completed: false },
+      { id: 2, text: 'Connect Gemini, Claude, or OpenAI API key', completed: true }
+    ];
+
+    function renderTodos() {
+      const list = document.getElementById('todo-list');
+      list.innerHTML = todos
+        .map((t) => `<li>${t.completed ? '✅' : '⬜'} <strong>#${t.id}</strong>: ${t.text}</li>`)
+        .join('');
+    }
+
+    function logEvent(msg) {
+      document.getElementById('log').textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    }
+
+    renderTodos();
+
+    // Register Imperative WebMCP Tools via navigator.modelContext
+    if (navigator.modelContext) {
+      navigator.modelContext.registerTool({
+        name: 'getTodos',
+        description: 'Get the current list of todo items on the page',
+        inputSchema: { type: 'object', properties: {} },
+        execute: async () => {
+          logEvent('WebMCP Tool called: getTodos()');
+          return { todos };
+        }
+      });
+
+      navigator.modelContext.registerTool({
+        name: 'addTodo',
+        description: 'Add a new todo item to the page list',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            text: { type: 'string', description: 'The task description to add' }
+          },
+          required: ['text']
+        },
+        execute: async ({ text }) => {
+          const item = { id: todos.length + 1, text, completed: false };
+          todos.push(item);
+          renderTodos();
+          logEvent(`WebMCP Tool called: addTodo("${text}")`);
+          return { added: item, totalTodos: todos.length };
+        }
+      });
+
+      navigator.modelContext.registerTool({
+        name: 'setPageTheme',
+        description: 'Change the background theme color of the webpage',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            color: { type: 'string', description: 'CSS background color such as #fef3c7, #e0f2fe, or #f8fafc' }
+          },
+          required: ['color']
+        },
+        execute: async ({ color }) => {
+          document.body.style.backgroundColor = color;
+          logEvent(`WebMCP Tool called: setPageTheme("${color}")`);
+          return { status: 'updated', color };
+        }
+      });
+    }
+
+    // Handle Declarative Form submit
+    document.getElementById('support-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const subject = document.getElementById('subject').value;
+      const priority = document.getElementById('priority').value;
+      logEvent(`Declarative WebMCP Form submitted: subject="${subject}", priority="${priority}"`);
+    });
+  </script>
+</body>
+</html>
