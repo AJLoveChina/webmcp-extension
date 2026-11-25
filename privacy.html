@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — webmcp Chrome Extension</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #4f46e5;
+      --accent-soft: #eef2ff;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      line-height: 1.65;
+    }
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 40px 20px 64px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 40px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+    h1 {
+      font-size: 26px;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+    .updated {
+      font-size: 13px;
+      color: var(--muted);
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    h2 {
+      font-size: 18px;
+      margin-top: 28px;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    p, li {
+      font-size: 15px;
+      color: #1e293b;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    code {
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-size: 13px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .highlight-box {
+      background: #f1f5f9;
+      border-left: 4px solid var(--accent);
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 28px;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="top-bar">
+        <div class="brand">
+          <img src="icons/icon128.png" alt="webmcp icon" />
+          <div>
+            <h1>Privacy Policy — webmcp Chrome Extension</h1>
+          </div>
+        </div>
+        <span class="updated">Effective Date: November 2026</span>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Summary:</strong> <strong>webmcp</strong> does <strong>not</strong> operate any backend server, does <strong>not</strong> collect telemetry or analytics, and does <strong>not</strong> sell or share your personal data. All configuration and API keys stay locally in your browser (<code>chrome.storage.local</code>) and are sent directly from your browser only to the AI provider you explicitly configure (Google Gemini, Anthropic Claude, or OpenAI).
+      </div>
+
+      <h2>1. Overview &amp; Single Purpose</h2>
+      <p>
+        <strong>webmcp</strong> is a client-side Chrome Extension that enables users to discover, inspect, and execute WebMCP (Web Model Context Protocol) tools exposed by webpages using natural language prompts powered by the user's own API key from Google Gemini, Anthropic Claude, or OpenAI.
+      </p>
+
+      <h2>2. Data Stored Locally on Your Device</h2>
+      <p>
+        All extension data is stored exclusively on your local device using Chrome's built-in <code>chrome.storage.local</code> API:
+      </p>
+      <ul>
+        <li><strong>AI Provider API Keys:</strong> Any API keys you enter for Google Gemini, Anthropic Claude, or OpenAI are saved locally in <code>chrome.storage.local</code>. They are never transmitted to the extension developer or any third party other than the corresponding AI provider you selected.</li>
+        <li><strong>User Preferences:</strong> Your chosen AI provider, selected model ID, UI theme (Light/Dark/System), and interface language preference.</li>
+        <li><strong>Local Prompt History:</strong> Up to 100 of your most recent prompt inputs are stored locally in <code>chrome.storage.local</code> so you can recall previous prompts with the Up/Down arrow keys.</li>
+      </ul>
+
+      <h2>3. How Webpage &amp; User Data Is Processed</h2>
+      <p>
+        When you open the <strong>webmcp</strong> Side Panel or Popup and submit a natural language prompt:
+      </p>
+      <ul>
+        <li><strong>WebMCP Tool Discovery:</strong> The extension inspects the currently active tab for WebMCP tool definitions registered via <code>navigator.modelContext</code> / <code>document.modelContext</code> or declarative HTML forms (<code>&lt;form toolname="..."&gt;</code>).</li>
+        <li><strong>Direct AI Provider Requests:</strong> When you send a prompt, your prompt text, the active page's title and URL, the schemas of the discovered WebMCP tools on that page, and the outputs of any executed WebMCP tool calls are sent directly from your browser over HTTPS to the official API endpoint of your selected provider:
+          <ul>
+            <li>Google Gemini API (<code>https://generativelanguage.googleapis.com</code>)</li>
+            <li>Anthropic Claude API (<code>https://api.anthropic.com</code>)</li>
+            <li>OpenAI API (<code>https://api.openai.com</code>)</li>
+          </ul>
+        </li>
+        <li>No data is ever routed through any intermediate proxy or server owned by the extension developer.</li>
+      </ul>
+
+      <h2>4. Permissions Used &amp; Why</h2>
+      <ul>
+        <li><code>storage</code>: Stores your API keys, model selection, UI preferences, and local prompt history in <code>chrome.storage.local</code>.</li>
+        <li><code>activeTab</code> &amp; <code>scripting</code>: Discovers and executes WebMCP tools registered in the active webpage's MAIN JavaScript world when you interact with the extension.</li>
+        <li><code>sidePanel</code>: Displays the webmcp assistant UI inside Chrome's native side panel alongside the webpage.</li>
+        <li><code>tabs</code>: Detects active tab changes and page navigation events so the displayed list of WebMCP tools stays synchronized with the current tab.</li>
+        <li><code>&lt;all_urls&gt;</code> (Host Permission): Allows the extension to detect WebMCP tools on any WebMCP-enabled website you visit and connect directly to your chosen AI provider's API endpoint.</li>
+      </ul>
+
+      <h2>5. Data Sharing, Sale, and Compliance</h2>
+      <p>
+        We do not collect, transmit, store, sell, or rent any user data on external servers. In accordance with the <a href="https://developer.chrome.com/docs/webstore/program-policies/user-data-faq/" target="_blank" rel="noopener">Chrome Web Store User Data Policy</a> and Limited Use requirements:
+      </p>
+      <ul>
+        <li>We do not transfer or sell user data to third parties, data brokers, or advertising networks.</li>
+        <li>We do not use or transfer user data for serving advertisements, creditworthiness, or lending purposes.</li>
+        <li>Any data sent to Google Gemini, Anthropic Claude, or OpenAI is governed by your own account and the respective privacy policy and terms of service of the provider whose API key you supply.</li>
+      </ul>
+
+      <h2>6. User Control &amp; Data Deletion</h2>
+      <p>
+        Because all data is stored locally in your browser:
+      </p>
+      <ul>
+        <li>You can clear or replace your API key at any time in the extension's Settings panel.</li>
+        <li>Uninstalling the <strong>webmcp</strong> extension from Chrome automatically and permanently deletes all locally stored data in <code>chrome.storage.local</code>.</li>
+      </ul>
+
+      <h2>7. Contact &amp; Open Source Transparency</h2>
+      <p>
+        <strong>webmcp</strong> is open source. You can inspect the complete source code or report questions and issues on GitHub at:
+        <a href="https://github.com/AJLoveChina/webmcp-extension" target="_blank" rel="noopener">https://github.com/AJLoveChina/webmcp-extension</a>.
+      </p>
+    </div>
+
+    <footer>
+      <p>
+        <a href="index.html">&larr; Back to Extension Overview &amp; Store Submission Guide</a> ·
+        <a href="demo/index.html">WebMCP Playground Demo</a>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
