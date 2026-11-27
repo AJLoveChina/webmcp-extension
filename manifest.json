@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "webmcp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Control any WebMCP-enabled website with natural language using your own Gemini, Claude, or OpenAI API key.",
   "permissions": [
     "storage",
